@@ -7,6 +7,7 @@ import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
+import AchievementsSection from "@/components/AchievementsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import BlogSection from "@/components/BlogSection";
 import ContactSection from "@/components/ContactSection";
@@ -25,6 +26,7 @@ import {
   Testimonial,
   BlogPost,
   ApiStatusInfo,
+  Achievement,
 } from "@/types";
 
 import { portfolioApi } from "@/lib/api";
@@ -38,6 +40,7 @@ interface PortfolioClientProps {
   initialTestimonials: Testimonial[];
   initialArticles: BlogPost[];
   initialEducation?: Education[];
+  initialAchievements?: Achievement[];
   initialApiStatus: ApiStatusInfo;
 }
 
@@ -50,6 +53,7 @@ export default function PortfolioClient({
   initialTestimonials,
   initialArticles,
   initialEducation = [],
+  initialAchievements = [],
   initialApiStatus,
 }: PortfolioClientProps) {
   const [profile, setProfile] = useState<UserProfile>(initialProfile);
@@ -60,6 +64,7 @@ export default function PortfolioClient({
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
   const [articles, setArticles] = useState<BlogPost[]>(initialArticles);
   const [education, setEducation] = useState<Education[]>(initialEducation);
+  const [achievements, setAchievements] = useState<Achievement[]>(initialAchievements);
   const [apiStatus, setApiStatus] = useState<ApiStatusInfo>(initialApiStatus);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -83,6 +88,7 @@ export default function PortfolioClient({
         fetchedTestimonials,
         fetchedArticles,
         fetchedEducation,
+        fetchedAchievements,
       ] = await Promise.allSettled([
         portfolioApi.getProfile(),
         portfolioApi.getSkills(),
@@ -92,6 +98,7 @@ export default function PortfolioClient({
         portfolioApi.getTestimonials(),
         portfolioApi.getArticles(),
         portfolioApi.getEducation(),
+        portfolioApi.getAchievements(),
       ]);
 
       if (fetchedProfile.status === "fulfilled" && fetchedProfile.value) {
@@ -117,6 +124,9 @@ export default function PortfolioClient({
       }
       if (fetchedEducation.status === "fulfilled" && fetchedEducation.value) {
         setEducation(fetchedEducation.value);
+      }
+      if (fetchedAchievements.status === "fulfilled" && fetchedAchievements.value) {
+        setAchievements(fetchedAchievements.value);
       }
     } catch (err) {
       console.warn("Portfolio data refresh error:", err);
@@ -146,6 +156,7 @@ export default function PortfolioClient({
         projects={projects}
         experiences={experiences}
         education={education}
+        achievements={achievements}
         apiStatus={apiStatus}
         onRefresh={refreshAllData}
         isRefreshing={isRefreshing}
@@ -163,6 +174,7 @@ export default function PortfolioClient({
         education={education}
         references={references}
         testimonials={testimonials}
+        achievements={achievements}
       />
 
       {/* About Section */}
@@ -179,6 +191,9 @@ export default function PortfolioClient({
 
       {/* Career Experience Timeline */}
       <ExperienceSection experiences={experiences} />
+
+      {/* Honors, Awards & Certifications Section */}
+      <AchievementsSection achievements={achievements} />
 
       {/* Testimonials & Endorsements */}
       <TestimonialsSection
@@ -222,6 +237,7 @@ export default function PortfolioClient({
           testimonials: testimonials.length,
           references: references.length,
           articles: articles.length,
+          achievements: achievements.length,
         }}
       />
     </main>

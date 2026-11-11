@@ -44,6 +44,7 @@ export default function Footer({ profile }: FooterProps) {
             <a href="#skills" className="hover:text-white transition-colors">Skills</a>
             <a href="#projects" className="hover:text-white transition-colors">Projects</a>
             <a href="#experience" className="hover:text-white transition-colors">Experience</a>
+            <a href="#achievements" className="hover:text-white transition-colors">Achievements</a>
             <a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a>
             <a href="#blog" className="hover:text-white transition-colors">Blog</a>
             <a href="#contact" className="hover:text-white transition-colors">Contact</a>

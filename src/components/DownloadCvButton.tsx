@@ -10,6 +10,7 @@ import {
   Education,
   Reference,
   Testimonial,
+  Achievement,
 } from "@/types";
 import { generatePdfCv, CvData } from "@/lib/generatePdfCv";
 import { portfolioApi } from "@/lib/api";
@@ -22,6 +23,7 @@ interface DownloadCvButtonProps {
   education?: Education[];
   references?: Reference[];
   testimonials?: Testimonial[];
+  achievements?: Achievement[];
   variant?: "hero" | "navbar" | "about" | "outline" | "compact";
   className?: string;
   showIcon?: boolean;
@@ -35,6 +37,7 @@ export default function DownloadCvButton({
   education,
   references,
   testimonials,
+  achievements,
   variant = "hero",
   className = "",
   showIcon = true,
@@ -64,6 +67,7 @@ export default function DownloadCvButton({
         education: education && education.length > 0 ? education : apiData.education,
         references: references && references.length > 0 ? references : apiData.references,
         testimonials: testimonials && testimonials.length > 0 ? testimonials : apiData.testimonials,
+        achievements: achievements && achievements.length > 0 ? achievements : apiData.achievements,
       };
 
       // 2. Generate and trigger PDF CV download

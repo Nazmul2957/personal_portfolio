@@ -12,7 +12,7 @@ import {
   RefreshCw,
   SlidersHorizontal,
 } from "lucide-react";
-import { ApiStatusInfo, UserProfile, Skill, Project, Experience, Education } from "@/types";
+import { ApiStatusInfo, UserProfile, Skill, Project, Experience, Education, Achievement } from "@/types";
 import DownloadCvButton from "@/components/DownloadCvButton";
 
 interface NavbarProps {
@@ -21,6 +21,7 @@ interface NavbarProps {
   projects?: Project[];
   experiences?: Experience[];
   education?: Education[];
+  achievements?: Achievement[];
   apiStatus: ApiStatusInfo;
   onRefresh: () => void;
   isRefreshing: boolean;
@@ -35,6 +36,7 @@ export default function Navbar({
   projects,
   experiences,
   education,
+  achievements,
   apiStatus,
   onRefresh,
   isRefreshing,
@@ -58,6 +60,7 @@ export default function Navbar({
     { name: "Skills", href: "#skills" },
     { name: "Projects", href: "#projects" },
     { name: "Experience", href: "#experience" },
+    { name: "Achievements", href: "#achievements" },
     { name: "Testimonials", href: "#testimonials" },
     { name: "Blog", href: "#blog" },
     { name: "Contact", href: "#contact" },
@@ -146,6 +149,7 @@ export default function Navbar({
             projects={projects}
             experiences={experiences}
             education={education}
+            achievements={achievements}
             variant="navbar"
           />
 
@@ -201,6 +205,7 @@ export default function Navbar({
                 projects={projects}
                 experiences={experiences}
                 education={education}
+                achievements={achievements}
                 variant="about"
                 className="w-full justify-center"
               />

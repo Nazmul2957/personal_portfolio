@@ -10,6 +10,7 @@ import {
   BlogPost,
   InquiryPayload,
   ApiStatusInfo,
+  Achievement,
 } from "@/types";
 import { defaultProfile } from "./mockData";
 
@@ -225,6 +226,27 @@ function normalizeArticle(raw: any, index: number): BlogPost {
     createdAt: raw.created_at || raw.createdAt,
     authorUsername: raw.author_username,
     authorAvatar: raw.author_avatar,
+  };
+}
+
+// Helper: Normalize Achievement
+function normalizeAchievement(raw: any, index: number): Achievement {
+  return {
+    id: raw.id || `ach-${index + 1}`,
+    userId: raw.user_id || raw.userId,
+    title: raw.title || "Achievement",
+    organization: raw.organization || "",
+    category: raw.category || "Award",
+    description: raw.description || "",
+    issueDate: raw.issue_date || raw.issueDate || "",
+    expiryDate: raw.expiry_date || raw.expiryDate || "",
+    credentialId: raw.credential_id || raw.credentialId || "",
+    credentialUrl: raw.credential_url || raw.credentialUrl || "",
+    imageUrl: raw.image_url || raw.imageUrl || "",
+    isFeatured: raw.is_featured !== undefined ? Boolean(raw.is_featured) : Boolean(raw.isFeatured),
+    displayOrder: typeof raw.display_order === "number" ? raw.display_order : raw.displayOrder ?? (index + 1),
+    createdAt: raw.created_at || raw.createdAt,
+    updatedAt: raw.updated_at || raw.updatedAt,
   };
 }
 
@@ -468,7 +490,46 @@ export const portfolioApi = {
     return [];
   },
 
-  // 13. Fetch all CV sections directly from API
+  // 13. GET Achievements & Certifications
+  getAchievements: async (params?: {
+    category?: string;
+    featured?: boolean;
+    search?: string;
+    sort?: string;
+    page?: number;
+    limit?: number;
+    userId?: number;
+  }): Promise<Achievement[]> => {
+    try {
+      const res = await apiClient.get(`${BACKEND_BASE}/achievements`, {
+        params: { limit: 100, ...params },
+      });
+      const items = res.data?.achievements || res.data?.data;
+      if (Array.isArray(items)) {
+        return items
+          .filter((a: any) => !a.is_deleted)
+          .map(normalizeAchievement);
+      }
+    } catch (err) {
+      console.warn("Could not fetch achievements from backend:", err);
+    }
+    return [];
+  },
+
+  // 14. GET Single Achievement by ID
+  getAchievementById: async (id: string | number): Promise<Achievement | null> => {
+    try {
+      const res = await apiClient.get(`${BACKEND_BASE}/achievements/${id}`);
+      if (res.data?.data) {
+        return normalizeAchievement(res.data.data, 0);
+      }
+    } catch (err) {
+      console.warn(`Could not fetch achievement #${id}:`, err);
+    }
+    return null;
+  },
+
+  // 15. Fetch all CV sections directly from API
   getAllCvData: async (): Promise<{
     profile: UserProfile;
     skills: Skill[];
@@ -477,6 +538,7 @@ export const portfolioApi = {
     education: Education[];
     references: Reference[];
     testimonials: Testimonial[];
+    achievements: Achievement[];
   }> => {
     const [
       profileRes,
@@ -486,6 +548,7 @@ export const portfolioApi = {
       eduRes,
       refRes,
       testRes,
+      achRes,
     ] = await Promise.allSettled([
       portfolioApi.getProfile(),
       portfolioApi.getSkills(),
@@ -494,6 +557,7 @@ export const portfolioApi = {
       portfolioApi.getEducation(),
       portfolioApi.getReferences(),
       portfolioApi.getTestimonials(),
+      portfolioApi.getAchievements(),
     ]);
 
     return {
@@ -524,6 +588,10 @@ export const portfolioApi = {
       testimonials:
         testRes.status === "fulfilled" && Array.isArray(testRes.value)
           ? testRes.value
+          : [],
+      achievements:
+        achRes.status === "fulfilled" && Array.isArray(achRes.value)
+          ? achRes.value
           : [],
     };
   },

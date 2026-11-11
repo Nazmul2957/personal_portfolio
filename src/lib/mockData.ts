@@ -7,6 +7,7 @@ import {
   BlogPost,
   Testimonial,
   Reference,
+  Achievement,
 } from "@/types";
 
 export const defaultProfile: UserProfile = {
@@ -45,5 +46,7 @@ export const defaultEducation: Education[] = [];
 export const defaultTestimonials: Testimonial[] = [];
 
 export const defaultReferences: Reference[] = [];
+
+export const defaultAchievements: Achievement[] = [];
 
 export const defaultBlogPosts: BlogPost[] = [];

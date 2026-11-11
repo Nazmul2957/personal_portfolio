@@ -16,6 +16,7 @@ export default async function HomePage() {
     testimonialsRes,
     articlesRes,
     educationRes,
+    achievementsRes,
   ] = await Promise.allSettled([
     portfolioApi.checkHealth(),
     portfolioApi.getProfile(),
@@ -26,6 +27,7 @@ export default async function HomePage() {
     portfolioApi.getTestimonials(),
     portfolioApi.getArticles(),
     portfolioApi.getEducation(),
+    portfolioApi.getAchievements(),
   ]);
 
   const apiStatus =
@@ -80,6 +82,11 @@ export default async function HomePage() {
       ? educationRes.value
       : [];
 
+  const achievements =
+    achievementsRes.status === "fulfilled" && Array.isArray(achievementsRes.value)
+      ? achievementsRes.value
+      : [];
+
   return (
     <PortfolioClient
       initialProfile={profile}
@@ -90,6 +97,7 @@ export default async function HomePage() {
       initialTestimonials={testimonials}
       initialArticles={articles}
       initialEducation={education}
+      initialAchievements={achievements}
       initialApiStatus={apiStatus}
     />
   );

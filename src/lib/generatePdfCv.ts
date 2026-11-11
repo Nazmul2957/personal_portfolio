@@ -7,6 +7,7 @@ import {
   Education,
   Reference,
   Testimonial,
+  Achievement,
 } from "@/types";
 
 export interface CvData {
@@ -17,6 +18,7 @@ export interface CvData {
   education?: Education[];
   references?: Reference[];
   testimonials?: Testimonial[];
+  achievements?: Achievement[];
 }
 
 /**
@@ -32,6 +34,7 @@ export async function generatePdfCv(data: CvData): Promise<void> {
     education = [],
     references = [],
     testimonials = [],
+    achievements = [],
   } = data;
 
   const doc = new jsPDF({
@@ -413,7 +416,70 @@ export async function generatePdfCv(data: CvData): Promise<void> {
     });
   }
 
-  // ================= 7. REFERENCES =================
+  // ================= 7. HONORS, AWARDS & CERTIFICATIONS =================
+  if (achievements && achievements.length > 0) {
+    drawSectionHeader("Honors, Awards & Certifications");
+
+    achievements.forEach((ach) => {
+      checkPageBreak(16);
+
+      // Title & Category tag
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
+      const achTitle = ach.title + (ach.category ? `  [${ach.category}]` : "");
+      doc.text(achTitle, marginX, y);
+
+      // Date (Right-aligned)
+      const dateParts = [ach.issueDate, ach.expiryDate ? `Exp: ${ach.expiryDate}` : ""].filter(Boolean);
+      const dateStr = dateParts.join(" • ");
+      if (dateStr) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.setTextColor(COLOR_MUTED[0], COLOR_MUTED[1], COLOR_MUTED[2]);
+        doc.text(dateStr, marginX + contentWidth, y, { align: "right" });
+      }
+      y += 4.2;
+
+      // Organization & Credential Meta
+      const metaParts: string[] = [];
+      if (ach.organization) metaParts.push(ach.organization);
+      if (ach.credentialId) metaParts.push(`Credential ID: ${ach.credentialId}`);
+
+      if (metaParts.length > 0) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8.5);
+        doc.setTextColor(COLOR_ACCENT[0], COLOR_ACCENT[1], COLOR_ACCENT[2]);
+        doc.text(metaParts.join("  •  "), marginX, y);
+        y += 4;
+      }
+
+      // Verification URL if provided
+      if (ach.credentialUrl) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(COLOR_MUTED[0], COLOR_MUTED[1], COLOR_MUTED[2]);
+        const shortUrl = `Verify: ${ach.credentialUrl.replace(/^https?:\/\/(www\.)?/, "").slice(0, 50)}`;
+        doc.text(shortUrl, marginX, y);
+        y += 3.8;
+      }
+
+      // Description if provided
+      if (ach.description) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.setTextColor(COLOR_BODY[0], COLOR_BODY[1], COLOR_BODY[2]);
+        const descLines = doc.splitTextToSize(ach.description, contentWidth);
+        checkPageBreak(descLines.length * 3.8 + 1);
+        doc.text(descLines, marginX, y);
+        y += descLines.length * 3.8 + 1.5;
+      }
+
+      y += 2.5;
+    });
+  }
+
+  // ================= 8. REFERENCES =================
   if (references && references.length > 0) {
     drawSectionHeader("Professional References");
 

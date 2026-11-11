@@ -24,6 +24,7 @@ import {
   Education,
   Reference,
   Testimonial,
+  Achievement,
 } from "@/types";
 import DownloadCvButton from "@/components/DownloadCvButton";
 
@@ -35,6 +36,7 @@ interface HeroSectionProps {
   education?: Education[];
   references?: Reference[];
   testimonials?: Testimonial[];
+  achievements?: Achievement[];
 }
 
 export default function HeroSection({
@@ -45,6 +47,7 @@ export default function HeroSection({
   education,
   references,
   testimonials,
+  achievements,
 }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen pt-32 pb-20 flex items-center justify-center overflow-hidden bg-grid-pattern">
@@ -93,6 +96,7 @@ export default function HeroSection({
                 education={education}
                 references={references}
                 testimonials={testimonials}
+                achievements={achievements}
                 variant="hero"
               />
 

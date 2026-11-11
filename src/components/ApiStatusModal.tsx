@@ -28,6 +28,7 @@ interface ApiStatusModalProps {
     testimonials: number;
     references: number;
     articles: number;
+    achievements?: number;
   };
 }
 
@@ -65,6 +66,12 @@ export default function ApiStatusModal({
       path: "/experiences",
       description: "Work Experience Timeline, Positions & Accomplishments",
       activeCount: `${counts.experiences} roles`,
+    },
+    {
+      method: "GET",
+      path: "/achievements",
+      description: "Public Achievements, Certifications, Credential IDs & Badges",
+      activeCount: `${counts.achievements ?? 0} achievements`,
     },
     {
       method: "GET",

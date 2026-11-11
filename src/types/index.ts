@@ -143,6 +143,24 @@ export interface BlogPost {
   authorAvatar?: string;
 }
 
+export interface Achievement {
+  id: string | number;
+  userId?: number;
+  title: string;
+  organization: string;
+  category: "Award" | "Certification" | "Honor" | string;
+  description?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  credentialId?: string;
+  credentialUrl?: string;
+  imageUrl?: string;
+  isFeatured?: boolean;
+  displayOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface InquiryPayload {
   name: string;
   email: string;
