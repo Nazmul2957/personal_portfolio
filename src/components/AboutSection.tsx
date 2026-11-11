@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { UserProfile, Education } from "@/types";
+import DownloadCvButton from "@/components/DownloadCvButton";
 
 interface AboutSectionProps {
   profile: UserProfile;
@@ -103,6 +104,16 @@ export default function AboutSection({ profile, education }: AboutSectionProps) 
                   <Award className="w-4 h-4 text-emerald-400" />
                   <span>Verified Top Contributor</span>
                 </div>
+              </div>
+
+              {/* Direct PDF CV Download */}
+              <div className="pt-2">
+                <DownloadCvButton
+                  profile={profile}
+                  education={education}
+                  variant="outline"
+                  className="w-full justify-center bg-white/5 hover:bg-white/10"
+                />
               </div>
             </div>
 

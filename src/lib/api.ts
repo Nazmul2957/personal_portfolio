@@ -4,6 +4,7 @@ import {
   Skill,
   Project,
   Experience,
+  Education,
   Reference,
   Testimonial,
   BlogPost,
@@ -441,6 +442,89 @@ export const portfolioApi = {
       success: true,
       message: "Message dispatched! (Simulation mode - will sync when backend is online)",
       id: "demo-" + Date.now(),
+    };
+  },
+
+  // 12. GET Education
+  getEducation: async (): Promise<Education[]> => {
+    try {
+      const res = await apiClient.get(`${BACKEND_BASE}/educations`);
+      const items = res.data?.educations || res.data?.data;
+      if (Array.isArray(items)) {
+        return items.filter((e: any) => !e.is_deleted).map((raw: any, index: number) => ({
+          id: raw.id || `edu-${index + 1}`,
+          degree: raw.degree || raw.qualification || "Degree",
+          fieldOfStudy: raw.field_of_study || raw.fieldOfStudy || "",
+          institution: raw.institution || raw.university || raw.school || "",
+          location: raw.location || "",
+          startDate: raw.start_date || raw.startDate || "",
+          endDate: raw.end_date || raw.endDate || "",
+          grade: raw.grade || raw.gpa || undefined,
+          activities: raw.activities || undefined,
+          description: raw.description || undefined,
+        }));
+      }
+    } catch {}
+    return [];
+  },
+
+  // 13. Fetch all CV sections directly from API
+  getAllCvData: async (): Promise<{
+    profile: UserProfile;
+    skills: Skill[];
+    experiences: Experience[];
+    projects: Project[];
+    education: Education[];
+    references: Reference[];
+    testimonials: Testimonial[];
+  }> => {
+    const [
+      profileRes,
+      skillsRes,
+      expRes,
+      projRes,
+      eduRes,
+      refRes,
+      testRes,
+    ] = await Promise.allSettled([
+      portfolioApi.getProfile(),
+      portfolioApi.getSkills(),
+      portfolioApi.getExperiences(),
+      portfolioApi.getProjects(),
+      portfolioApi.getEducation(),
+      portfolioApi.getReferences(),
+      portfolioApi.getTestimonials(),
+    ]);
+
+    return {
+      profile:
+        profileRes.status === "fulfilled" && profileRes.value
+          ? profileRes.value
+          : defaultProfile,
+      skills:
+        skillsRes.status === "fulfilled" && Array.isArray(skillsRes.value)
+          ? skillsRes.value
+          : [],
+      experiences:
+        expRes.status === "fulfilled" && Array.isArray(expRes.value)
+          ? expRes.value
+          : [],
+      projects:
+        projRes.status === "fulfilled" && Array.isArray(projRes.value)
+          ? projRes.value
+          : [],
+      education:
+        eduRes.status === "fulfilled" && Array.isArray(eduRes.value)
+          ? eduRes.value
+          : [],
+      references:
+        refRes.status === "fulfilled" && Array.isArray(refRes.value)
+          ? refRes.value
+          : [],
+      testimonials:
+        testRes.status === "fulfilled" && Array.isArray(testRes.value)
+          ? testRes.value
+          : [],
     };
   },
 };

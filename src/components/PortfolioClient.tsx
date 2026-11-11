@@ -20,6 +20,7 @@ import {
   Skill,
   Project,
   Experience,
+  Education,
   Reference,
   Testimonial,
   BlogPost,
@@ -36,6 +37,7 @@ interface PortfolioClientProps {
   initialReferences: Reference[];
   initialTestimonials: Testimonial[];
   initialArticles: BlogPost[];
+  initialEducation?: Education[];
   initialApiStatus: ApiStatusInfo;
 }
 
@@ -47,6 +49,7 @@ export default function PortfolioClient({
   initialReferences,
   initialTestimonials,
   initialArticles,
+  initialEducation = [],
   initialApiStatus,
 }: PortfolioClientProps) {
   const [profile, setProfile] = useState<UserProfile>(initialProfile);
@@ -56,6 +59,7 @@ export default function PortfolioClient({
   const [references, setReferences] = useState<Reference[]>(initialReferences);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
   const [articles, setArticles] = useState<BlogPost[]>(initialArticles);
+  const [education, setEducation] = useState<Education[]>(initialEducation);
   const [apiStatus, setApiStatus] = useState<ApiStatusInfo>(initialApiStatus);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -78,6 +82,7 @@ export default function PortfolioClient({
         fetchedReferences,
         fetchedTestimonials,
         fetchedArticles,
+        fetchedEducation,
       ] = await Promise.allSettled([
         portfolioApi.getProfile(),
         portfolioApi.getSkills(),
@@ -86,6 +91,7 @@ export default function PortfolioClient({
         portfolioApi.getReferences(),
         portfolioApi.getTestimonials(),
         portfolioApi.getArticles(),
+        portfolioApi.getEducation(),
       ]);
 
       if (fetchedProfile.status === "fulfilled" && fetchedProfile.value) {
@@ -108,6 +114,9 @@ export default function PortfolioClient({
       }
       if (fetchedArticles.status === "fulfilled" && fetchedArticles.value) {
         setArticles(fetchedArticles.value);
+      }
+      if (fetchedEducation.status === "fulfilled" && fetchedEducation.value) {
+        setEducation(fetchedEducation.value);
       }
     } catch (err) {
       console.warn("Portfolio data refresh error:", err);
@@ -133,6 +142,10 @@ export default function PortfolioClient({
       {/* Navigation */}
       <Navbar
         profile={profile}
+        skills={skills}
+        projects={projects}
+        experiences={experiences}
+        education={education}
         apiStatus={apiStatus}
         onRefresh={refreshAllData}
         isRefreshing={isRefreshing}
@@ -142,10 +155,18 @@ export default function PortfolioClient({
       />
 
       {/* Hero Section */}
-      <HeroSection profile={profile} />
+      <HeroSection
+        profile={profile}
+        skills={skills}
+        projects={projects}
+        experiences={experiences}
+        education={education}
+        references={references}
+        testimonials={testimonials}
+      />
 
       {/* About Section */}
-      <AboutSection profile={profile} />
+      <AboutSection profile={profile} education={education} />
 
       {/* Skills Matrix Section */}
       <SkillsSection skills={skills} />

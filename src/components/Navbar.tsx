@@ -12,10 +12,15 @@ import {
   RefreshCw,
   SlidersHorizontal,
 } from "lucide-react";
-import { ApiStatusInfo, UserProfile } from "@/types";
+import { ApiStatusInfo, UserProfile, Skill, Project, Experience, Education } from "@/types";
+import DownloadCvButton from "@/components/DownloadCvButton";
 
 interface NavbarProps {
   profile: UserProfile;
+  skills?: Skill[];
+  projects?: Project[];
+  experiences?: Experience[];
+  education?: Education[];
   apiStatus: ApiStatusInfo;
   onRefresh: () => void;
   isRefreshing: boolean;
@@ -26,6 +31,10 @@ interface NavbarProps {
 
 export default function Navbar({
   profile,
+  skills,
+  projects,
+  experiences,
+  education,
   apiStatus,
   onRefresh,
   isRefreshing,
@@ -130,6 +139,16 @@ export default function Navbar({
             {theme === "dark" ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-indigo-400" />}
           </button>
 
+          {/* Download CV Action */}
+          <DownloadCvButton
+            profile={profile}
+            skills={skills}
+            projects={projects}
+            experiences={experiences}
+            education={education}
+            variant="navbar"
+          />
+
           {/* Contact Button */}
           <a
             href="#contact"
@@ -175,20 +194,31 @@ export default function Navbar({
                 {link.name}
               </a>
             ))}
-            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-              <button
-                onClick={onRefresh}
-                className="flex items-center gap-2 text-xs text-slate-300 bg-white/5 px-3 py-2 rounded-lg"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
-                Sync with Admin
-              </button>
-              <button
-                onClick={onToggleTheme}
-                className="p-2 rounded-lg bg-white/5 text-slate-300"
-              >
-                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
+            <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+              <DownloadCvButton
+                profile={profile}
+                skills={skills}
+                projects={projects}
+                experiences={experiences}
+                education={education}
+                variant="about"
+                className="w-full justify-center"
+              />
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={onRefresh}
+                  className="flex items-center gap-2 text-xs text-slate-300 bg-white/5 px-3 py-2 rounded-lg"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+                  Sync with Admin
+                </button>
+                <button
+                  onClick={onToggleTheme}
+                  className="p-2 rounded-lg bg-white/5 text-slate-300"
+                >
+                  {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
           </nav>
         </div>

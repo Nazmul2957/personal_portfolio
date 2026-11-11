@@ -16,13 +16,36 @@ import {
   Star,
   ShieldCheck,
 } from "lucide-react";
-import { UserProfile } from "@/types";
+import {
+  UserProfile,
+  Skill,
+  Project,
+  Experience,
+  Education,
+  Reference,
+  Testimonial,
+} from "@/types";
+import DownloadCvButton from "@/components/DownloadCvButton";
 
 interface HeroSectionProps {
   profile: UserProfile;
+  skills?: Skill[];
+  projects?: Project[];
+  experiences?: Experience[];
+  education?: Education[];
+  references?: Reference[];
+  testimonials?: Testimonial[];
 }
 
-export default function HeroSection({ profile }: HeroSectionProps) {
+export default function HeroSection({
+  profile,
+  skills,
+  projects,
+  experiences,
+  education,
+  references,
+  testimonials,
+}: HeroSectionProps) {
   return (
     <section className="relative min-h-screen pt-32 pb-20 flex items-center justify-center overflow-hidden bg-grid-pattern">
       {/* Ambient background glows */}
@@ -62,11 +85,22 @@ export default function HeroSection({ profile }: HeroSectionProps) {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+              <DownloadCvButton
+                profile={profile}
+                skills={skills}
+                projects={projects}
+                experiences={experiences}
+                education={education}
+                references={references}
+                testimonials={testimonials}
+                variant="hero"
+              />
+
               <a
                 href="#projects"
                 className="group relative inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.02] transition-all"
               >
-                <span>Explore Featured Work</span>
+                <span>Explore Work</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
 
@@ -76,18 +110,6 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               >
                 <span>Get In Touch</span>
               </a>
-
-              {profile.resumeUrl && (
-                <a
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-3.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl border border-white/5 transition-all"
-                >
-                  <Download className="w-4 h-4" />
-                  <span className="hidden sm:inline">Resume</span>
-                </a>
-              )}
             </div>
 
             {/* Social Links */}
